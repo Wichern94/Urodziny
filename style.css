@@ -112,11 +112,11 @@ body{
     .shadow {
       content: "";
       position: absolute;
-      width: 30rem;
+      width: 40rem;
       height: 7rem;
-      background: rgba(0, 0, 0, .2);
+      background: rgba(0, 0, 0, 0.3);
       border-radius: 200px/60px;
-      bottom: 14rem;
+      bottom: 16rem;
       z-index: 0;
       overflow: hidden;
       filter: blur(5px);
@@ -127,13 +127,19 @@ body{
       position: absolute;
       align-items: center;
       justify-content: center;
-      width: 80%;
-      height: 10rem;
-      background: rgba(196, 106, 54, 0.59);
-      border-radius: 1rem;
-      bottom: 15rem;
-      transform: skew(10deg);
+      height: 20rem;
+      width: 95%;
+      clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
+      background: rgba(211, 184, 169, 0.5);
+      border-radius: 2rem;
+      bottom: 7rem;
+      box-shadow:10px 10px 40px rgba(0, 0, 0, .5);
+      z-index: 1;
+      
     }
+    
+      
+      
 
     
     
@@ -196,6 +202,7 @@ body{
   }
 }
 
+
 .present-box.lan{
   animation: land 2s ease-out;
   
@@ -215,8 +222,21 @@ body{
   }
 }
 
+@keyframes shadowLand {
+  0% {
+    transform: scaleX(0.8);
+  }
+  50% {
+    transform: scaleX(0.9);
+  }
+  100% {
+    transform: sclaeX(1);
+  }
+
+}
+
 .shadow.lan {
-  animation: land 2s ease-out;
+  animation: shadowLand 2s ease-out;
 }
 .present-box,
 .lid-box,
