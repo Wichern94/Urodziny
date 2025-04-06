@@ -3,10 +3,15 @@ const ribbonLeft = document.querySelector(".ribbon.left");
 const ribbonRight = document.querySelector(".ribbon.right");
 const presentBox = document.querySelector(".present-box");
 const lidBox = document.querySelector(".lid-box" );
+const shadow = document.querySelector(".shadow");
+
 
 // Śledzimy flagi
 let isStretchingLeft = false;
 let isStretchingRight = false;
+let isLeftRibbonStretched = false;
+let isRightRibbonStretched = false;
+let isRibbonStretched = false;
 
 // zmienna dla pozycji myszy
 let startX = null
@@ -73,16 +78,31 @@ function handleStretchingComplete(side) {
     // dodajemy animacje podskakiwania
     ribbon.classList.remove("spin-bounce");
     setTimeout(() => {
-ribbon.classList.add("spin-bounce");
+        ribbon.classList.add("spin-bounce");
     },10);
     
-    // ribbonRight.classList.add("spin-bounce");
+    
 
     // jak animacja sie skonczy polsekundy pozniej ribbon znika
-    ribbon.addEventListener("animationend", () =>{
+    ribbon.addEventListener("animationend", () => {
         console.log(`animacja ${side} skonczona, ukrywam`);
         
-        ribbon.style.display = "none;"
+        ribbon.style.display = "none";
+        if (side === "left") {
+            isLeftRibbonStretched = true;
+            console.log(isLeftRibbonStretched);
+        } else if (side == "right") {
+            isRightRibbonStretched = true;
+            console.log(isRightRibbonStretched);
+        }
+        if (isLeftRibbonStretched && isRightRibbonStretched) {
+            isRibbonStretched = true
+            console.log(isRibbonStretched);
+        }
+            
+            
+            
+        
        
     });
     
@@ -110,8 +130,21 @@ function handleMouseUp() {
     }
 };
    function stopShake(){
-    presentBox.classList.add("stopped"),
-    lidBox.classList.add("stopped");
+    
+    setTimeout(()=> {
+        presentBox.classList.remove("shaked"),
+        lidBox.classList.remove("shaked");
+        shadow.classList.remove("shaked");
+        presentBox.classList.add("lan"),
+        lidBox.classList.add("lan");
+        shadow.classList.add("lan");
+        },100);
+        
+        // presentBox.style.transform = "translateY(0) scaleX(1) scaleY(1)";
+        // lidBox.style.transform = "translateY(0) scaleX(1) scaleY(1)";
+        // shadow.style.transform = "scaleX(1)"
+
+    
    };
    
   
@@ -130,3 +163,19 @@ document.addEventListener("mousemove", handleMouseMove);
 document.addEventListener("mouseup", handleMouseUp);
 ribbonLeft.addEventListener("mouseenter", stopShake);
 ribbonRight.addEventListener("mouseenter", stopShake);
+lidBox.addEventListener("click", () => {
+   if (isRibbonStretched) {
+    console.log("wstazki rozciagniete moge otwierac");
+    
+    lidBox.style.cursor = "pointer";
+    
+
+    lidBox.style.transform = "none";
+    lidBox.offsetHeight;
+
+    lidBox.classList.add("open");
+
+   }  else {
+    lidBox.style.cursor = "default";
+   }
+});

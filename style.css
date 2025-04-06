@@ -17,6 +17,7 @@ body{
     display: flex;
     align-items: center;
     justify-content: center;
+    background: linear-gradient(to top, #d1d5ff, #ffcfff);
 }
 
 .present-box{
@@ -28,6 +29,8 @@ body{
     position: relative;
     display: flex;
     justify-content: center;
+    z-index: 2;
+    
 
   }
   .lid-box{
@@ -106,7 +109,31 @@ body{
       visibility: hidden;
       transition: opacity 0.3s ease-out;
     }
-    
+    .shadow {
+      content: "";
+      position: absolute;
+      width: 30rem;
+      height: 7rem;
+      background: rgba(0, 0, 0, .2);
+      border-radius: 200px/60px;
+      bottom: 14rem;
+      z-index: 0;
+      overflow: hidden;
+      filter: blur(5px);
+      animation: shadowBounce 2s ease-in-out infinite;
+    }
+    .table{
+      content: "";
+      position: absolute;
+      align-items: center;
+      justify-content: center;
+      width: 80%;
+      height: 10rem;
+      background: rgba(196, 106, 54, 0.59);
+      border-radius: 1rem;
+      bottom: 15rem;
+      transform: skew(10deg);
+    }
 
     
     
@@ -140,30 +167,75 @@ body{
 
 @keyframes shake {
   0%,100% {
-    transform: rotate(0deg) translateY(0px);
-  }
-  25% {
-    transform: rotate(-2deg) translate(-2px,2px);
+    transform:  translateY(0px) scaleX(1);
   }
   50% {
-    transform: rotate(2deg) translate(2px,-2px);
+    transform:  translateY(-20px) scaleX(1.05) scaleY(0.96);
   }
-  75% {
-    transform: rotate(-2deg) translate(-2px,2px);
-  }
+  
+    
+  
+ 
+}
 
+.shaked {
+   animation: shake 2s ease-in-out infinite; 
+  transform-origin: center bottom;
 }
-.present-box, .lid-box {
-  animation: shake 0.8s ease-in-out infinite;
+
+/* animacja lądowania pudelka */
+@keyframes land{
+  0% {
+    transform: translateY(-15px) scaleX(1.02) scaleY(0.98);
+  }
+  50% {
+    transform: translateY(-7px) scaleX(1.01) scaleY(0.99);
+  }
+  100% {
+    transform: translateY(0px) scaleX(1.) scaleY(1);
+  }
 }
-.present-box.stopped{
-animation:none;
-animation-fill-mode: backwards;
+
+.present-box.lan{
+  animation: land 2s ease-out;
+  
 }
     
-.lid-box.stopped{
-animation-play-state:paused ;
-animation-fill-mode: backwards;
+.lid-box.lan{
+  animation: land 2s ease-out;
+}
+
+/* animacje cienia */
+@keyframes shadowBounce {
+  0%,100% {
+    transform:scaleX(1);
+  }
+  50% {
+    transform: scaleX(0.8);
+  }
+}
+
+.shadow.lan {
+  animation: land 2s ease-out;
+}
+.present-box,
+.lid-box,
+.shadow {
+  transition: transform 2s ease;
+}
+
+/* Animacja podnoszenia pokrywki */
+
+@keyframes lidOpen {
+  0% { 
+    top: 13rem;
+  }
+  100%{ 
+    top:1rem;
+  }
+}
+.lid-box.open {
+  animation: lidOpen 1s ease-out forwards;
 }
     
     
