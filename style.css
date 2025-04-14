@@ -25,14 +25,14 @@ body{
     height: 18rem;
     width: 30rem;
     border-radius: 0 0 1rem 1rem;
-    /* box-shadow: 0px -20px 20px rgba(0, 0, 0, 0.5); */
+    box-shadow: 0px 3px 13px rgba(0, 0, 0, .5);
     position: relative;
     display: flex;
     justify-content: center;
-    z-index: 2;
+    z-index: 5;
+  }
     
 
-  }
   .lid-box{
       height: 8rem;
       width: 35rem;
@@ -40,8 +40,9 @@ body{
       position: absolute;
       top: 13rem;
       border-radius: .8rem .8rem 0 0;
-      box-shadow: 5px 10px 10px rgba(0, 0, 0, .5);;
-      z-index: 5;
+      
+      
+      z-index: 6;
       display: flex;
       justify-content: center;
     }
@@ -54,7 +55,90 @@ body{
         bottom: 16rem;
         background: rgba(0, 0, 0, .3);
         filter: blur(5px);
+        z-index: 5;
     }
+    .card-container{
+      display: flex;
+      position: absolute;
+      height: 18rem;
+      width: 30rem;
+      justify-content: center;
+    }
+    .cards{
+      position: fixed;
+      height: 13rem;
+      width: 9rem;
+      top: 23rem;
+      border-radius: 1rem;
+      display: flex;
+      box-shadow: 5px 10px 10px rgba(0, 0, 0, .5);
+      transition: transform 2s ease;
+      
+    }
+    .card1{
+      /* left: 4rem; */
+      
+      z-index: 3;
+      background: black;
+    }
+    .card2{
+      justify-content: flex-start;
+      /* right:4rem; */
+      background: url(assets/steam.png);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      
+      z-index: 4;
+    }
+    .video{
+      width: 100%;
+      height: 100%;
+      border-radius: 1rem;
+      background-color: black;
+    }
+    .drop-container{
+      position: absolute;
+      display: flex;
+      width: 60%;
+      height: 15rem;
+      bottom: 2rem;
+      justify-content: space-between;
+      left:100vw;
+      
+      animation: dropZoneOnTable 2s ease forwards;
+      
+
+    }
+    .drop-area{
+      position: relative;
+      border-radius: 1rem;
+      margin: 1rem;
+      display: flex;
+      text-align: center;
+      justify-content: center;
+      align-items: center;
+      color: white;
+      overflow: hidden;
+      
+    }
+    #drop1{
+      height: 13rem;
+      width: 9rem;
+      border: white dashed 0.5px;
+      z-index: 1;
+    }
+    #drop2{
+      height: 13rem;
+      width: 9rem;
+      border: white dashed 0.5px;
+      z-index: 2;
+    }
+
+      
+      
+      
+
     
 .tape-box{
     height: 100%;
@@ -117,7 +201,7 @@ body{
       background: rgba(0, 0, 0, 0.3);
       border-radius: 200px/60px;
       bottom: 16rem;
-      z-index: 0;
+      z-index: 1;
       overflow: hidden;
       filter: blur(5px);
       animation: shadowBounce 2s ease-in-out infinite;
@@ -130,11 +214,11 @@ body{
       height: 20rem;
       width: 95%;
       clip-path: polygon(20% 0%, 80% 0%, 100% 100%, 0% 100%);
-      background: rgba(211, 184, 169, 0.5);
+      background: rgba(211, 184, 169, 1);
       border-radius: 2rem;
       bottom: 7rem;
       box-shadow:10px 10px 40px rgba(0, 0, 0, .5);
-      z-index: 1;
+      
       
     }
     
@@ -230,7 +314,7 @@ body{
     transform: scaleX(0.9);
   }
   100% {
-    transform: sclaeX(1);
+    transform: scaleX(1);
   }
 
 }
@@ -257,6 +341,59 @@ body{
 .lid-box.open {
   animation: lidOpen 1s ease-out forwards;
 }
+
+/* animacja card */
+@keyframes cardGoUpForFirst{
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2rem);
+  }
+  100% {
+    transform: translateY(-4rem)  
+  }
+}
+.cardsUpForFirst{
+  animation: cardGoUpForFirst 1.5s ease-out  forwards;
+}
+
+@keyframes cardGoUpForSecond{
+  0% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-2rem);
+  }
+  100% {
+    transform: translateY(-3rem)  
+  }
+}
+.cardsUpForSecond{
+  animation: cardGoUpForSecond 3s ease-out  forwards;
+}
+
+/* animacja przyjazdu drop zone */
+@keyframes dropZoneOnTable{
+  0% {
+    left:100vw;
+    
+  }
+  100% {
+    left: 20%;
+    
+    Transform: scaleX(1.05);
+    Transform: scaleY(1);
+  }
+}
+
+  
+  
+  
+    
+  
+
+   
     
     
         
