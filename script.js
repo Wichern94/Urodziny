@@ -6,6 +6,8 @@ const lidBox = document.querySelector(".lid-box" );
 const shadow = document.querySelector(".shadow");
 const giftCardOne = document.querySelector(".card1")
 const giftCardSecond= document.querySelector(".card2")
+const instructions = document.querySelector("#instruction")
+
 
 
 
@@ -19,6 +21,12 @@ let isLidOpen = false
 let isCardOneAnimationed =false
 let isCardSecondAnimationed =false
 let isDraging = false;
+let isDroppedInZone1 = false; // Flaga do sprawdzenia, czy element został upuszczony w strefie drop
+let isDroppedInZone2 = false; // Flaga do sprawdzenia, czy element został upuszczony w strefie drop
+let isPresentClosed = false;
+let isPresentGone = false;
+let isSteamCardDone = false; // Flaga dla karty Steam
+let isVideoWatched = false; // Flaga dla karty z filmem
 
 // zmienna dla pozycji myszy
 let startX = null //<= dla wstazki
@@ -97,6 +105,7 @@ function handleStretchingComplete(side) {
 
     // jak animacja sie skonczy polsekundy pozniej ribbon znika
     ribbon.addEventListener("animationend", () => {
+        instructions.textContent = "👍";
         console.log(`animacja ${side} skonczona, ukrywam`);
         //<= ukrywamy wstazke
         ribbon.style.display = "none";
@@ -109,6 +118,7 @@ function handleStretchingComplete(side) {
         }
         if (isLeftRibbonStretched && isRightRibbonStretched) {
             isRibbonStretched = true
+            instructions.textContent = "Kliknij na Pokrywke";
             console.log(isRibbonStretched);
         }
             
@@ -152,35 +162,43 @@ function handleMouseUp() {
     // funkcja otwierania prezentu
     function OpenPresent(){
         if (isRibbonStretched) {
+            instructions.textContent = "👉 Wyjmij Karty";
             console.log("wstazki rozciagniete moge otwierac");
-            
             lidBox.style.cursor = "pointer"; //<= zmieniamy kursor na pointer
-            
-        
             lidBox.style.transform = "none"; //<= ustawiamy transformacje na none
             lidBox.offsetHeight; //<= wymuszamy przeliczenie wysokości
-        
             lidBox.classList.add("open"); //<= dodajemy klase otwierania
-        
-           }  else {
-            lidBox.style.cursor = "default"; //<= zmieniamy kursor na default
-           }
-           if (lidBox.classList.contains("open")) { //<= sprawdzamy czy klasa otwierania istnieje
+        }  
+        if (lidBox.classList.contains("open")) { //<= sprawdzamy czy klasa otwierania istnieje
             isLidOpen = true;
             console.log(`lid otwarty ${isLidOpen}`);
-            }
-            if(isLidOpen) { 
-                setTimeout(() =>{ //<= po 2 sekundach dodajemy animacje do kart
-                giftCardOne.classList.add("cardsUpForFirst");
-                giftCardSecond.classList.add("cardsUpForSecond");
-            },2000)
-            }
+        }
+        if(isLidOpen === false ) { 
+           return 
+        } 
+        else {
+            giftCardOne.classList.add("cardsUpForFirst");
+            giftCardSecond.classList.add("cardsUpForSecond");
+        }
+            
+            
+            
+        
+            
+            
+        
+        
+        
+            
+           
+            
             
         };
         // funkcja pokazajaca drop zone
         function dropZoneOn() {
             if (document.getElementById("drop1") && document.getElementById("drop2")) {
                 console.log("drop zone juz istnieje");
+                instructions.textContent = " "
                 return; // Jeśli drop zone już istnieje, nie twórz jej ponownie
             }
             const dropContainer = document.createElement("div");
@@ -206,30 +224,34 @@ function handleMouseUp() {
             //     console.log("zaraz przyjedzie");
                 
             // }
+        }
+       
+        
 
             
-        }
 
     // sprawdzamy czy karty  juz sa na gorze
         giftCardOne.addEventListener("animationend",() => {
             isCardOneAnimationed=true;
+            giftCardOne.style.cursor = "grabbing";
             console.log(`pierwsza karta na gorze ${isCardOneAnimationed}`);
             if(isCardOneAnimationed && isCardSecondAnimationed) {
                  dropZoneOn()
              }      
          });
          giftCardSecond.addEventListener("animationend",() => {
+             isCardSecondAnimationed=true;
+             giftCardSecond.style.cursor = "grabbing"
+             console.log(`druga karta na gorze ${isCardSecondAnimationed}`);
+             if(isCardOneAnimationed && isCardSecondAnimationed) {
+             
+                  setTimeout( () => {
+                     dropZoneOn()},1000)
+              } 
+               
+          });
            
             
-            isCardSecondAnimationed=true;
-            console.log(`druga karta na gorze ${isCardSecondAnimationed}`);
-            if(isCardOneAnimationed && isCardSecondAnimationed) {
-            
-                 setTimeout( () => {
-                    dropZoneOn()},1000)
-             } 
-              
-         });
 
         //   obsluga drag and drop
 let currentDraggedElement = null; // Zmienna przechowująca aktualnie przeciągany element
@@ -238,6 +260,10 @@ function mouseDown(e, element) {
     if (isCardSecondAnimationed && e) { // Sprawdzamy, czy karty są na górze
         console.log("Karty na górze, mogę przeciągać");
         isDraging = true; // Zmieniamy flagę na true
+        }
+        if(isDroppedInZone1 && isDroppedInZone2) {
+            return 
+        } else {
         dragStartX = e.clientX; // Zapisujemy pozycję startową
         dragStartY = e.clientY; // Zapisujemy pozycję startową
 
@@ -266,7 +292,7 @@ function mouseMove(e) {
 function mouseUp(e) {
     const tolerance = 30;
     isDraging = false; // Zmieniamy flagę na false
-    let isDroppedInZone = false; // Flaga do sprawdzenia, czy element został upuszczony w strefie drop
+    
     if (currentDraggedElement) {
         const dropOne = {
             left: document.getElementById("drop1").getBoundingClientRect().left - tolerance,
@@ -296,6 +322,7 @@ function mouseUp(e) {
             draggedRect.bottom <= dropOne.bottom
         ) {
             console.log("Pierwsza karta przeciągnięta do pierwszego dropa");
+            instructions.textContent = "✔️"
             const dropZone = document.getElementById("drop1"); // Pobieramy element dropa
             dropZone.appendChild(currentDraggedElement); // Dodajemy element do pierwszego dropa
             currentDraggedElement.style.position = "absolute"; // Ustawiamy pozycję na absolute
@@ -304,7 +331,9 @@ function mouseUp(e) {
             currentDraggedElement.style.left = "0";
             currentDraggedElement.style.width = "100%"; // Karta zajmuje całą szerokość drop zone
             currentDraggedElement.style.height = "100%"; // Karta zajmuje całą wysokość drop zone
-            isDroppedInZone = true; // Ustawiamy flagę na true
+            currentDraggedElement.style.cursor = "pointer";
+            isDroppedInZone1 = true; // Ustawiamy flagę na true
+            isDraging = false;
         }
         else if(
             draggedRect.left >= dropTwo.left &&
@@ -313,6 +342,7 @@ function mouseUp(e) {
             draggedRect.bottom <= dropTwo.bottom
         ) {
             console.log("Druga karta przeciągnięta do drugiego dropa");
+            instructions.textContent = "✔️"
             document.getElementById("drop2").appendChild(currentDraggedElement); // Dodajemy element do drugiego dropa
             currentDraggedElement.style.position = "absolute";
             currentDraggedElement.classList.remove("cardsUpForFirst", "cardsUpForSecond");
@@ -320,9 +350,11 @@ function mouseUp(e) {
             currentDraggedElement.style.left = "0"; // Ustawiamy pozycję na absolute
             currentDraggedElement.style.width = "100%"; // Karta zajmuje całą szerokość drop zone
             currentDraggedElement.style.height = "100%"; // Karta zajmuje całą wysokość drop zone
-            isDroppedInZone = true; // Ustawiamy flagę na true
+            currentDraggedElement.style.cursor = "pointer";
+            isDroppedInZone2 = true; // Ustawiamy flagę na true
+            isDraging = false;
         }
-        if (!isDroppedInZone) {
+        if (!isDroppedInZone1 && !isDroppedInZone2) {
             console.log("Karta nie została przeciągnięta do dropa, wraca na miejsce");
             currentDraggedElement.style.top = elementStartY + "px"; // Ustawiamy pozycję y na startową
             currentDraggedElement.style.left = elementStartX + "px"; // Ustawiamy pozycję x na startową
@@ -335,7 +367,175 @@ function mouseUp(e) {
     currentDraggedElement = null; // Resetujemy aktualnie przeciągany element
     document.removeEventListener("mousemove", mouseMove); // Usuwamy nasłuchiwanie na ruch myszki
     document.removeEventListener("mouseup", mouseUp); // Usuwamy nasłuchiwanie na puszczenie myszki
+
+if (isDroppedInZone1 && isDroppedInZone2){
+        instructions.textContent = "👇 Zamknij Pudełko"}
+};
+//  funkcja zamykania prezentu
+function closePresent() {
+    if (isDroppedInZone1 && isDroppedInZone2){
+        instructions.textContent = "👇 Zamknij Pudełko"
+         
+        isLidOpen = false; // flaga ze wieko jest zamkniete
+        isDraging = false; // flaga ze juz nie przeciagamy
+        console.log(isDraging);
+
+        //usuwamy nasluchiwanie
+        lidBox.removeEventListener("click",  OpenPresent);
+        giftCardOne.removeEventListener("mousedown", (e) => mouseDown(e, giftCardOne));
+        giftCardSecond.removeEventListener("mousedown", (e) => mouseDown(e, giftCardSecond));
+        //usuwamy klasy
+        lidBox.classList.remove("lan");
+        lidBox.classList.add("close");
+        lidBox.style.top = "";
+        lidBox.addEventListener("animationend", ()=> {
+            isPresentClosed = true;
+            console.log(` to ${isPresentClosed} ze prezent zamknieto`);
+            presentGoAway()
+        },{ once: true })
+        lidBox.classList.remove("open");
+        giftCardOne.classList.remove("cardsUpForFirst");
+        giftCardSecond.classList.remove("cardsUpForSecond");
+    }
 }
+// funkcja usuwajaca zamkniety prezent
+    function presentGoAway(){
+        if (isPresentClosed) {
+            instructions.style.top = "543px";
+            instructions.textContent = "👇   przyjżyj się kartą     👇"
+            lidBox.classList.remove("close");
+            presentBox.classList.remove("lan");
+            shadow.classList.remove("lan");
+            lidBox.classList.add("present-hide");
+            presentBox.classList.add("present-hide");
+            shadow.classList.add("present-hide");
+            presentBox.addEventListener("animationend", ()=> {
+                isPresentGone = true;
+                console.log(` to ${isPresentGone} ze prezent odjechał`);
+            }, { once: true });
+
+        }
+    }
+    
+    //  funkcja interakcji z filmem
+    function turnAroundBlackOne() {
+       
+        if (isPresentGone) {
+            giftCardOne.classList.add("into-vid");
+            giftCardOne.addEventListener("animationend" , () =>{
+            const video = document.createElement("video");
+            video.src ="assets/zyczenia.mp4";
+            video.classList.add("video-to-middle")
+            video.controls = true;
+            video.autoplay = false;
+            document.body.appendChild(video);
+            video.addEventListener("ended", () => {
+                isVideoWatched = true;
+                checkDropZoneReady(); // Sprawdzamy, czy drop zone może wjechać
+              });
+            video.addEventListener("click", (e) => {
+                e.stopPropagation();
+              });
+        },{ once: true })
+       }
+   }
+//  usuwanie filmu
+   document.body.addEventListener("click", () => {
+    const existingVideo = document.querySelector(".video-to-middle");
+    if (existingVideo) {
+      existingVideo.classList.add("fade-out");
+      existingVideo.addEventListener("animationend", () => {
+        existingVideo.remove();
+      }, { once: true });
+    }
+  });
+
+
+//   funkcja interakcji z karta
+
+function turnAroundSteamOne() {
+       
+    if (isPresentGone) {
+        giftCardSecond.classList.add("into-key");
+        giftCardSecond.addEventListener("animationend" , () =>{
+        const steamKey = "QFN6P-3NIN9-34F98";
+        const keyDiv = document.createElement("div");
+        keyDiv.textContent = `Karta podarunkowa: ${steamKey}`;
+        giftCardSecond.appendChild(keyDiv);
+
+        const logo = document.createElement("img");
+        logo.src = "assets/Steam_icon_logosvg.svg";
+        logo.alt = "Steam Logo";
+        logo.classList.add("steam-logo");
+        giftCardSecond.appendChild(logo);
+
+        // przycisk
+        const copyBtn = document.createElement("button");
+        copyBtn.textContent = "Z kopiuj Sobie";
+        giftCardSecond.appendChild(copyBtn);
+
+        copyBtn.addEventListener("click",() =>{
+            isSteamCardDone = true;
+            checkDropZoneReady();
+            navigator.clipboard.writeText(steamKey)
+                .then( () => alert("klucz skopiowany!"))
+                .catch( () => alert("Błąd kopiowania"));
+        });
+        
+            
+          
+    }, { once: true });
+   }
+}
+
+function checkDropZoneReady() {
+    if (isSteamCardDone && isVideoWatched) {
+      // Tutaj dodajemy kod, który uruchomi animację dla drop zone
+      console.log("Obie karty gotowe! Drop zone wraca na ekran.");
+      // Możesz tutaj np. dodać klasę do drop zone, żeby ją animować
+      const dropMoveOut = document.querySelector(".drop-container")
+      dropMoveOut.classList.add("drop-zone-out");
+      dropMoveOut.addEventListener("animationend", (e) =>{
+        if(e.animationName ==="dropZoneOffTable"){
+        dropMoveOut.remove();
+
+        instructions.textContent = "🐣🐣 Wesołych Świąt dla całej rodzinki🐣 oraz jeszcze raz 100 Lat"
+        }
+      })
+    }
+  }
+
+            
+
+           
+            
+
+        
+           
+            
+           
+                
+            
+                    
+                
+            
+                    
+
+            
+
+
+
+            
+
+            
+        
+        
+        
+    
+    
+        
+        
+
 
 // Dodajemy nasłuchiwanie na zdarzenie `mousedown` dla obu kart
 giftCardOne.addEventListener("mousedown", (e) => mouseDown(e, giftCardOne));
@@ -349,7 +549,10 @@ document.addEventListener("mousemove", handleMouseMove);
 document.addEventListener("mouseup", handleMouseUp);
 ribbonLeft.addEventListener("mouseenter", stopShake);
 ribbonRight.addEventListener("mouseenter", stopShake);
-lidBox.addEventListener("click", (e) => OpenPresent(e));
+lidBox.addEventListener("click",  OpenPresent);
+lidBox.addEventListener("click",  closePresent);
+giftCardOne.addEventListener("click", turnAroundBlackOne);
+giftCardSecond.addEventListener("click", turnAroundSteamOne);
 
 
 
